@@ -3,20 +3,6 @@
 
 * From the cloned repo run `site-config-tower.yml` playbook to create job templates and workflow template.
 
-[source,text]
-----
-[bastion]$ sudo -i
-[bastion]# cd ansible_advance_homework
-[bastion]# TOWER_GUID=<Ansible Tower Homework GUID from mail>
-[bastion]# OSP_GUID=<Openstack for Ansible GUID from mail>
-[bastion]# OPENTLC_LOGIN=<username-company.com>
-[bastion]# OPENTLC_PASSWORD=<your openlc account password>
-[bastion]# GITHUB_REPO=https://github.com/<githubhandler>/ansible_advance_homework
-[bastion]# JQ_REPO_BASE=http://www.opentlc.com/download/ansible_bootcamp
-[bastion]# REGION=<enter region name example us-east-1>
-[bastion]# RH_MAIL_ID=<your mail id for dynamic inventory tag>
-[bastion]# ansible-playbook site-config-tower.yml -e tower_GUID=${TOWER_GUID} -e osp_GUID=${OSP_GUID} -e opentlc_login=${OPENTLC_LOGIN} -e path_to_opentlc_key=/root/.ssh/mykey.pem -e param_repo_base=${JQ_REPO_BASE} -e opentlc_password=${OPENTLC_PASSWORD} -e REGION_NAME=${REGION} -e EMAIL=${RH_MAIL_ID} -e github_repo=${GITHUB_REPO}
-----
 
 
 .List of Playbooks
@@ -41,7 +27,7 @@
 | site-config-tower.yml | Playbook to call role `config-tower`
 | site-osp-delete.yml | Playbook to call role
 | site-osp-instances.yml | Playbook to call role
-| site-setup-workstation.yml | Playbook to call role
+| site-setup-prereqs.yml | Playbook to call role
 | site-smoke-osp.yml | Playbook to test three tier app on OSP
 | site-smoketest-aws.yml | Playbook to test three tier app on AWS
 | grading-script.yml | Self grading script
