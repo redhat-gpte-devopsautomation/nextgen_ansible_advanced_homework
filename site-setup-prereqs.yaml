@@ -1,9 +1,9 @@
 
 - hosts: localhost
   vars:
-    OSP_GUID: {{ lookup('env','OSP_GUID') }}
-    OSP_DOMAIN: {{ lookup('env','OSP_DOMAIN') }}
-    OPENTLC_ID: {{ lookup('env','OPENTLC_ID') }}
+    OSP_GUID: "{{ lookup('env','OSP_GUID') }}"
+    OSP_DOMAIN: "{{ lookup('env','OSP_DOMAIN') }}"
+    OPENTLC_ID: "{{ lookup('env','OPENTLC_ID') }}"
   tasks:
   - name: Create workstation inventory
     add_host:
