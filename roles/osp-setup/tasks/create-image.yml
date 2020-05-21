@@ -1,0 +1,16 @@
+- name: Download RHEL image
+  get_url:
+     url: https://www.opentlc.com/download/ansible_bootcamp/rhel-server-7.6-update-5-x86_64-kvm.qcow2 
+     dest: /tmp/rhel.qcow2
+  tags:
+      - tested
+- name: Create openstack image
+  os_image:
+     cloud: openstack
+     name: rhel-guest
+     container_format: bare
+     disk_format: qcow2
+     state: present
+     filename: /tmp/rhel.qcow2
+  tags:
+      - tested

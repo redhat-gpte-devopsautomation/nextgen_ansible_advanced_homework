@@ -1,0 +1,66 @@
+- hosts: localhost
+  gather_facts: false
+  vars:
+    OSP_GUID: "{{ lookup('env','OSP_GUID') }}"
+    OSP_DOMAIN: "{{ lookup('env','OSP_DOMAIN') }}"
+    TOWER_GUID: "{{ lookup('env','TOWER_GUID') }}"
+  tasks:
+  - name: Create In-memory Inventory
+    add_host: 
+      name: workstation-{{ OSP_GUID }}.{{ OSP_DOMAIN }}
+      group: workstation
+      ansible_ssh_private_key_file: ~/.ssh/openstack.pem
+      ansible_ssh_user: cloud-user
+ 
+- hosts: workstation
+  gather_facts: false
+  tasks:
+  - name: OpenStack servers
+    os_server_info:
+      cloud: openstack
+      server: 'frontend'
+    register: openstack_info
+  
+  - name: Check if all osp instance exist
+    debug: "{{ openstack_info.openstack_servers | length }}"
+    register: osp_instance
+
+  - debug: var=osp_instance
+
+
+  - name: Access website
+    uri:
+      url: "http://{{ item.public_v4 }}"
+      status_code: 200
+      return_content: yes
+    when: 'item.hostname == "frontend"'
+    loop: "{{ openstack_info.openstack_servers }}"
+    register: qa_webpage
+    ignore_errors: yes
+
+  - name: Fail
+    fail:
+    when: "'Ansible' not in qa_webpage.results[0].content" 
+
+  
+- hosts: localhost
+  vars:
+    ANSIBLE_ADVANCE_GUID: "{{ lookup('env','THREE_TIER_GUID') }}"
+  gather_facts: false
+  tasks:
+  - name: Access website
+    uri:
+      url: "http://frontend1.{{ ANSIBLE_ADVANCE_GUID }}.example.opentlc.com"
+      status_code: 200
+      return_content: yes
+    register: prod_webpage
+
+
+  - name: Fail
+    fail:
+    when: "'Ansible' not in prod_webpage.content" 
+
+  - name: Success
+    debug: msg="Congrats Yours HW Assignment is completed"
+
+

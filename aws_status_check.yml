@@ -1,0 +1,13 @@
+- hosts: all
+  gather_facts: false
+  tasks:
+  - name: Check the instances status
+    wait_for:
+      host: "{{ item }}"
+      port: 22
+      search_regex: OpenSSH
+      timeout: 600
+    delegate_to: localhost
+    with_items:
+      - "{{ inventory_hostname }}"
+        
