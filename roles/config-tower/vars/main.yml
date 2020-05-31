@@ -1,6 +1,7 @@
 ---
 # vars file for roles/config-tower
 org_name: Default 
+scm_type: git
 scm_branch: master 
 scm_url: "{{ github_repo }}"
 proj_name: "00_Homework Assignment"
