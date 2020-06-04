@@ -1,5 +1,4 @@
-- name: Create Homework Assignment project
-
+#- name: Create Homework Assignment project
 
 - name: Machine Credentail to connect to workstation using openstack.pub
   tower_credential:
@@ -21,7 +20,6 @@
   command: |
     tower-cli group create --inventory "{{static_inventory_name}}"  --name {{group_name}}
 
-
 - name: Add tower host
   tower_host:
     name: "{{host_name}}"
@@ -36,7 +34,6 @@
 - name: Associate workstation host to group 
   command: | 
     tower-cli host associate --host "{{host_name}}" --group "{{group_name}}"
-
 
 - name: Tower Creds key file
   tower_credential:
