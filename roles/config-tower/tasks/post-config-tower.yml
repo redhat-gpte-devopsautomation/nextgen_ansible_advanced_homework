@@ -1,7 +1,7 @@
-- name: Create Homework Assignment project
+# - name: Create Homework Assignment project
 
 
-- name: Machine Credentail to connect to workstation using openstack.pub
+- name: Machine Credential to connect to workstation using openstack.pub
   tower_credential:
     name: Connect_to_workstation
     organization: Default
@@ -47,8 +47,8 @@
     tower_host: tower1.{{tower_GUID}}.example.opentlc.com
     tower_username: admin
     tower_password: r3dh4t1!
-    tower_verify_ssl: no
-    ssh_key_data: /root/.ssh/mykey.pem
+    tower_verify_ssl: false
+    ssh_key_data: /root/.ssh/{{tower_GUID}}key.pem
     username: "{{ opentlc_login }}"
 
 - name: Remove secret
