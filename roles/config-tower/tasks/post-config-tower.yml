@@ -1,7 +1,7 @@
 - name: Create Homework Assignment project
   tower_project:
-    name: "02_Provision QA Env"
-    description: "Create QA Environment"
+    name: "00_Homework Assignment"
+    description: "Create Assignment project"
     organization: "Default"
     state: present
     scm_type: git
