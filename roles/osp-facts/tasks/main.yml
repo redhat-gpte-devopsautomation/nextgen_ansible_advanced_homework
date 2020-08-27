@@ -3,6 +3,7 @@
    - name: Fetch Instance Info
      os_server_info:
       cloud: openstack
+      auth: "{{ os_auth }}"
      register: result
    - name: Add host
      add_host:
