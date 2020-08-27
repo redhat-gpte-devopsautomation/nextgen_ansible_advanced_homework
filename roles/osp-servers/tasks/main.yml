@@ -1,4 +1,36 @@
-- include_tasks: tasks/frontend.yml
-- include_tasks: tasks/app1.yml
-- include_tasks: tasks/app2.yml
-- include_tasks: tasks/db.yml
+---
+  - name: Create instances
+    os_server:
+      cloud: "{{ cloud_name }}"
+      name: "{{ item.value.name }}"
+      state: "{{ item.value.state }}"
+      image: "{{ item.value.image }}"
+      key_name: "{{ item.value.key_name }}"
+      flavor: "{{ item.value.flavor }}"
+      security_groups: "{{ item.value.security_group }}"
+      delete_fip: yes
+      wait: no
+      nics:
+        - net-name: int_network
+      meta: "{{ item.value.meta.0 }}"
+      userdata: |
+        #!/bin/bash
+        curl -o /tmp/openstack.pub http://www.opentlc.com/download/ansible_bootcamp/openstack_keys/openstack.pub
+        cat /tmp/openstack.pub >> /home/cloud-user/.ssh/authorized_keys
+    with_dict: "{{ osp_servers }}"
+    tags:
+      - test.servers
+    
+  - name: Add floating IP to instance
+    os_floating_ip:
+      cloud: "{{ cloud_name }}"
+      state: present
+      reuse: yes
+      server: "{{ item.value.name }}"
+      network: ext_network
+      wait: true
+      timeout: 200
+    with_dict: "{{ osp_servers }}"
+    tags:
+      - test.servers
+# tasks file for osp.servers
