@@ -1,2 +1,3 @@
 ---
+cloud_name: openstack
 # vars file for roles/osp-instance-delete
