@@ -28,5 +28,6 @@
 - name: enable apache httpd at boot
   service:
     name: httpd
-    enabled: true
     state: started
+    enabled: yes
+    
