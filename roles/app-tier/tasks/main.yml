@@ -1,33 +1,40 @@
 ---
-# tasks file for app-tier
-- name: install tomcat
-  package:
-    name: 
-      - tomcat
-      - httpd
+- name: Install apache and tomcat
+  yum:
+    name:
+    - httpd
+    - tomcat
     state: latest
 
-- name: start tomcat
+- name: Create ansible tomcat directory
+  file:
+    path: "{{ __tomcat_web_root_directory }}"
+    state: directory
+
+- name: Write webapps/ROOT/index.html
+  template:
+    src: index.html.j2
+    dest: "{{ __tomcat_web_root_directory }}/index.html"
+    mode: 0644
+
+- name: Start tomcat and enabled at boot
   service:
     name: tomcat
     state: started
-    enabled: yes
+    enabled: true
 
-- name: create ansible tomcat directory
+- name: Create ansible tomcat directory
   file:
-    path: /usr/share/tomcat/webapps/ROOT
+    path: "{{ __tomcat_directory }}"
     state: directory
 
-- name: copy static index.html to tomcat webapps/ansible/index.html
+- name: Copy static index.html to tomcat webapps/ansible/index.html
   template:
     src: index.html.j2
-    dest: /usr/share/tomcat/webapps/ROOT/index.html
-    mode: 0644
-  notify: restart_Tomcat
+    dest: "{{ __tomcat_directory }}/index.html"
 
-- name: enable apache httpd at boot
+- name: Start apache httpd and enable at boot
   service:
     name: httpd
+    enabled: true
     state: started
-    enabled: yes
-    
