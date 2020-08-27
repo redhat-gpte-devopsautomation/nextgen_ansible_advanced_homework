@@ -1,3 +1,23 @@
 ---
+  - name: deploy haproxy
+    package:
+      name: httpd
+      state: latest
+  - name: install HAProxy
+    yum:
+      name: "{{ payload }}"
+      state: latest
+  - name: enable HAProxy
+    service:
+      name: "{{ payload }}"
+      state: started
+  - name: configure haproxy
+    template:
+      src: ./haproxy.cfg.j2
+      dest: /etc/haproxy/haproxy.cfg
+  - name: restart HAproxy
+    service:
+      name: "{{ payload }}"
+      state: restarted
 
 
