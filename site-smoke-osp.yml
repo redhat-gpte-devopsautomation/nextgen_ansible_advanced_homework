@@ -2,8 +2,24 @@
   gather_facts: false
   tasks:
   - name: OpenStack servers
-  - name: Curl website
+    os_server_info:
+      cloud: openstack
+      server: 'frontend'
+    register: openstack_info
+    tags:
+      - osp.smoke
 
+  - name: Curl website
+    uri:
+      url: "http://{{ item.public_v4 }}"
+      status_code: 200
+      return_content: yes
+    tags:
+      - osp.smoke
+    with_items:
+      - "{{ openstack_info.openstack_servers }}"
+    register: webpage
+    
   - name: Fail if 'Ansible has done its job' is not in the page content
     fail:
     when: "'Ansible has done its job' not in webpage.results[0].content"
