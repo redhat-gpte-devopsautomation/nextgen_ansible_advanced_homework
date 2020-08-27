@@ -8,16 +8,19 @@
     replace: 'Defaults  !requiretty'
     backup: yes
 
-- name: enable repos
-  template:
-    src: repos_template.j2
-    dest: /etc/yum.repos.d/open_three-tier-app.repo
-    mode: 0644
-    
-- name: install base tools and packages
-  yum:
-    name:
-    - httpie
-    - python-pip
-    state: latest
-
+# - name: pull repo file from local site into /etc
+#   become: yes
+#   become_user: root
+#   get_url:
+#       dest: /etc/yum.repos.d/internal.repo
+#       force: yes
+#       url: http://www.opentlc.com/download/ansible_bootcamp/repo/internal.repo
+#       mode: u=rw,g=r,o=r
+ 
+- name: pull repo file from local site into /etc
+  become: yes
+  become_user: root
+  copy:
+      dest: /etc/yum.repos.d/internal.repo
+      src: original.repo
+      mode: u=rw,g=r,o=r
