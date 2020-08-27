@@ -1,26 +1,32 @@
 ---
-  - name: install "{{ payload }}"
-    package:
-      name: "{{ payload }}"
-      state: latest
-  - name: enable "{{ payload }}" at boot
-    service:
-      name: "{{ payload }}"
-      enabled: yes
-  
-  - name: create ansible "{{ payload }}" directory
-    file:
-      path: "{{ tomcat_web_root }}"
-      state: directory
-  
-  - name: copy static index.html to "{{ tomcat_web_root }}/index.html"
-    template:
-      src: index.html.j2
-      dest: "{{ tomcat_web_root }}/index.html"
-      mode: 0644
-  
-  - name: start "{{ payload }}"
-    service:
-      name: "{{ payload }}"
-      state: started
+# tasks file for app-tier
+- name: install tomcat
+  package:
+    name: 
+      - tomcat
+      - httpd
+    state: latest
 
+- name: start tomcat
+  service:
+    name: tomcat
+    state: started
+    enabled: yes
+
+- name: create ansible tomcat directory
+  file:
+    path: /usr/share/tomcat/webapps/ROOT
+    state: directory
+
+- name: copy static index.html to tomcat webapps/ansible/index.html
+  template:
+    src: index.html.j2
+    dest: /usr/share/tomcat/webapps/ROOT/index.html
+    mode: 0644
+  notify: restart_Tomcat
+
+- name: enable apache httpd at boot
+  service:
+    name: httpd
+    enabled: true
+    state: started
