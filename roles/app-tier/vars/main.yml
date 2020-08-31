@@ -1,3 +1,2 @@
-__payload: tomcat
-__tomcat_web_root_directory: /var/lib/tomcat/webapps/ROOT
-__tomcat_directory: /var/lib/tomcat/webapps/ansible
+payload:          tomcat
+tomcat_web_root:  /usr/share/tomcat/webapps/ROOT
