@@ -10,7 +10,7 @@
        - git
      state: latest 
 - name: Install openstack library
-  command: pip3 install ansible openstacksdk -U
+  command: pip3 install ansible==2.9.7 openstacksdk -U
 - name: Create clouds.yaml file
   blockinfile:
     create: yes
