@@ -1,6 +1,6 @@
 ---
 
-- name: start {{ payload }}
+- name: start "{{ payload }}"
   service:
-    name: {{ payload }}
+    name: "{{ payload }}"
     state: started
