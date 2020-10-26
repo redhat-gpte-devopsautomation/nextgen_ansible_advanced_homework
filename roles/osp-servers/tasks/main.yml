@@ -1,3 +1,35 @@
 ---
 
 # tasks file for osp.servers
+- name: Create osp instances
+  os_server:
+    cloud: openstack
+    name: "{{ instance_name }}"
+    state: present
+    image: rhel-guest
+    meta: "group={{ group }},deployment_name={{ deployment }}"
+    flavor: m1.medium
+    security_groups: "{{ security_group_name }}"
+    key_name: ansible_ssh
+    wait: yes
+    nics:
+    - net-name: int_network
+    userdata: |
+      #!/bin/bash
+      curl -o /tmp/openstack.pub http://www.opentlc.com/download/ansible_bootcamp/openstack_keys/openstack.pub
+      cat /tmp/openstack.pub >> /home/cloud-user/.ssh/authorized_keys
+
+- name: Add floating IP to Servers
+  os_floating_ip:
+    cloud: openstack
+    state: present
+    reuse: yes
+    server: "{{ instance_name }}"
+    network: ext_network
+    wait: true
+    timeout: 180
+  register: instancefloatingip 
+
+- name: Show "{{ instance_name }}" public IP 
+  debug: var=instancefloatingip.floating_ip.floating_ip_address
+

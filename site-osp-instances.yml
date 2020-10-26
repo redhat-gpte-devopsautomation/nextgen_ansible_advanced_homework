@@ -1,6 +1,7 @@
-- hosts: localhost
-  connection: local
-  become: no
-  gather_facts: true
+- hosts: workstation
+  become: yes
   roles:
-   - osp-servers
+    - { role: osp-servers, instance_name: "{{osp_servers.frontend.name}}", group: "{{osp_servers.frontend.meta[0].group}}", deployment: "{{osp_servers.frontend.meta[0].deployment_name}}", security_group_name: "{{osp_servers.frontend.security_group}}" }
+    - { role: osp-servers, instance_name: "{{osp_servers.app1.name}}", group: "{{osp_servers.app1.meta[0].group}}", deployment: "{{osp_servers.app1.meta[0].deployment_name}}", security_group_name: "{{osp_servers.app1.security_group}}" }
+    - { role: osp-servers, instance_name: "{{osp_servers.app2.name}}", group: "{{osp_servers.app2.meta[0].group}}", deployment: "{{osp_servers.app2.meta[0].deployment_name}}", security_group_name: "{{osp_servers.app2.security_group}}" }
+    - { role: osp-servers, instance_name: "{{osp_servers.db.name}}", group: "{{osp_servers.db.meta[0].group}}", deployment: "{{osp_servers.db.meta[0].deployment_name}}", security_group_name: "{{osp_servers.db.security_group}}" }
