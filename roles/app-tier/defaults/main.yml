@@ -1,4 +1,3 @@
----
 flask_app_name: resource_hub
 flask_user: flask
 flask_home: /opt/

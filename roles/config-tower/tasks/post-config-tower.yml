@@ -1,20 +1,15 @@
-- name: Check variables
-  debug:
-    var: proj_name
-
 - name: Create Homework Assignment project
   tower_project:
     name: "{{proj_name}}"
-    description: "Three Tier Application"
-    organization: Default
+    description: "Homework Assignment project"
+    organization: "{{org_name}}"
     scm_type: git
-    scm_url: "{{github_repo}}"
-    scm_branch: master
-    state: present
+    scm_url: "{{scm_url}}"
+    scm_branch: "{{scm_branch}}"
     tower_host: tower1.{{tower_GUID}}.example.opentlc.com
     tower_username: admin
     tower_password: r3dh4t1!
-    tower_verify_ssl: no
+    state: present
 
 - name: Machine Credentail to connect to workstation using openstack.pub
   tower_credential:

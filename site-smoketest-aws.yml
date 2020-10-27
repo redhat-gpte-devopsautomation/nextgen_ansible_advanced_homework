@@ -5,16 +5,9 @@
     uri:
       url: "http://localhost/ping"
       return_content: yes
-      status_code: 200
     until: '"alive" in webpage.content'
     retries: 10
     delay: 1
     register: webpage
-
         
   - debug: var=webpage.content
-
-  - name: Fail if 'Ansible has done its job' is not in the page content
-    fail:
-    when: "'Ansible has done its job' not in webpage.content"
-

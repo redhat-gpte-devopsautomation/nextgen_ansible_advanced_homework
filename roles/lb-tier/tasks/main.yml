@@ -8,12 +8,11 @@
   template:
     src: haproxy.cfg.j2
     dest: /etc/haproxy/haproxy.cfg
-  notify: restart haproxy
+  notify: restart_haproxy
 
 - name: Enable Haproxy
   service:
     name: haproxy
     state: started
     enabled: true
-
 

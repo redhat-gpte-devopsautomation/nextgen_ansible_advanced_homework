@@ -3,6 +3,30 @@
   roles:
   - name: osp-facts
 
+#- name: Prepare your workstation for ssh to osp instances
+#  hosts: workstation
+#  become: yes
+#  tasks:
+#  - name: download openstack.pem
+#    get_url:
+#      url: http://www.opentlc.com/download/ansible_bootcamp/openstack_keys/openstack.pem
+#      dest: ~/.ssh/openstack.pem
+#      mode: 0400
+  
+#  - name: Create ssh config file
+#    blockinfile:
+#      create: yes
+#      path: ~/.ssh/config
+#      block: |2
+#        Host *
+#          User cloud-user
+#          IdentityFile ~/.ssh/openstack.pem
+#          ControlMaster auto
+#          ControlPath /tmp/%h-%r
+#          ControlPersist 5m
+#          UserKnownHostsFile /dev/null
+#          StrictHostKeyChecking no
+
 - name: Gather database facts
   hosts: appdbs
   gather_facts: true
@@ -34,4 +58,3 @@
   roles:
     - {name: base-config, tags: base-config}
     - {name: lb-tier, tags: [lbs, haproxy]}
-

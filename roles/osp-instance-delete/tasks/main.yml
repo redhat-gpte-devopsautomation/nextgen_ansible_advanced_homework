@@ -7,10 +7,10 @@
     register: r_os_servers
 
   - name: Delete instances
+#    debug: var=r_os_servers.openstack_servers[0].name
     os_server:
       cloud: openstack
       name: "{{ item.name }}"
       state: absent
       delete_fip: yes
     loop: "{{ r_os_servers.openstack_servers }}"
- 

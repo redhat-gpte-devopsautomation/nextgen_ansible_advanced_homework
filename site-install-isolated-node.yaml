@@ -5,6 +5,10 @@
     OPENTLC_ID: "{{ lookup('env','OPENTLC_ID') }}"
   gather_facts: false
   tasks:
+  - name: Change file openstack.pem mode
+    file:
+      path: ~/.ssh/openstack.pem
+      mode: '0400'
   - name: Append inventory file
     blockinfile:
       path: /root/ansible-tower-setup-latest/inventory
