@@ -31,7 +31,7 @@ opentlc_cred_name: "Opentlc key"
 job_template_aws_ssh_keys: "08_Prod SSH keys three tier app"
 ec2_inventory_source: "03_06_Prod Three tier inventory source"
 aws_region_name: "{{ REGION_NAME }}"
-tag_filters: "tag:instance_filter=three-tier-app-{{ EMAIL }}"
+tag_filters: "tag:instance_filter=three-tier-app-{{ EMAIL }}*"
 scm_inventory_source: "SCM three tier inventory source"
 path_to_scm_inventory: scm_inventory
 aws_read_keys: "AWS Access Key"

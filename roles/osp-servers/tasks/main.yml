@@ -18,7 +18,6 @@
       #!/bin/bash
       curl -o /tmp/openstack.pub http://www.opentlc.com/download/ansible_bootcamp/openstack_keys/openstack.pub
       cat /tmp/openstack.pub >> /home/cloud-user/.ssh/authorized_keys
-#  register: instanceip
 
 - name: Add floating IP to Servers
   os_floating_ip:
