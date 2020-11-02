@@ -9,6 +9,16 @@
     backup: yes
 
 - name: enable repos
+  template:
+    src: repos_template.j2
+    dest: /etc/yum.repos.d/3tier-app.repo
  
 - name: install base tools and packages
+  package:
+    name:
+      - httpd
+      - mariadb-server
+    state: latest
+
+   
 
