@@ -5,10 +5,10 @@
       cloud: openstack
      register: result
 
-  - name: Display all variables/facts known for a host
-    debug:
-      msg: IP is "{{ item.public_v4 }}" and groups are "{{ item.metadata.group }}"
-    loop: "{{ result.openstack_servers }}"
+   - name: Display all variables/facts known for a host
+     debug:
+       msg: IP is "{{ item.public_v4 }}" and groups are "{{ item.metadata.group }}"
+     loop: "{{ result.openstack_servers }}"
 
    - name: Add host
      add_host:
