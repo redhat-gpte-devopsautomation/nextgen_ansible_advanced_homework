@@ -16,8 +16,7 @@
 - name: install base tools and packages
   package:
     name:
-      - httpd
-      - mariadb-server
+      - curl
     state: latest
 
    
