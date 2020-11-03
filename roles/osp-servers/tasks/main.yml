@@ -2,4 +2,4 @@
 
 # tasks file for osp.servers
  - debug:
-     msg: {{ osp_servers }} 
+     msg: "{{ osp_servers }}" 
