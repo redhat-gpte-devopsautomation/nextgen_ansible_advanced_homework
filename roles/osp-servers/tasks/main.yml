@@ -4,7 +4,7 @@
   - name: debug
     debug:
       msg: "{{ item.image }}" 
-  loop: "{{ osp_servers }}"
+    loop: "{{ osp_servers }}"
 #  - name: Create server instances
 #    os_server:
 #      cloud:            "{{ openstack_cloud                           | default('openstack') }}"
