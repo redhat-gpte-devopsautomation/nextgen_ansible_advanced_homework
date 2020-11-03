@@ -28,11 +28,14 @@
     async: 900
     poll: 0
     register: r_instances
+  - name: debug
+    debug:
+      msg: "{{r_instances}}"
   - name: Fetch Instance Info
     os_server_info:
       cloud: openstack
     register: result
   - name: Display all variables/facts known for a host
     debug:
-       msg: IP is "{{ item.public_v4 }}" and groups are "{{ item.metadata.group }}"
-    loop: "{{ r_instances }}"
+       msg: IP is "{{ result }}"
+    #loop: "{{ result }}"
