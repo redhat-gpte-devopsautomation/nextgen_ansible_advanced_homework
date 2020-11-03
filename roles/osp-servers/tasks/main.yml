@@ -25,7 +25,7 @@
         curl -o /tmp/openstack.pub http://www.opentlc.com/download/ansible_bootcamp/openstack_keys/openstack.pub
         cat /tmp/openstack.pub >> /home/cloud-user/.ssh/authorized_keys
     loop: "{{ osp_servers | dict2items }}"      
-    async: 900
+    async: 1200
     poll: 0
     register: r_instances
   - name: debug
