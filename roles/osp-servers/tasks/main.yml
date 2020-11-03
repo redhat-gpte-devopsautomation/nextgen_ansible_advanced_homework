@@ -35,4 +35,4 @@
   - name: Display all variables/facts known for a host
     debug:
        msg: IP is "{{ item.public_v4 }}" and groups are "{{ item.metadata.group }}"
-    loop: "{{ r_instances.openstack_servers }}"
+    loop: "{{ r_instances }}"
