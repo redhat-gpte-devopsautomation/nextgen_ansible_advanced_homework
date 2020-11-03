@@ -3,38 +3,36 @@
 # tasks file for osp.servers
   - name: debug
     debug:
-      msg: "{{ item.image }}" 
-    loop: "{{ osp_servers }}"
-#  - name: Create server instances
-#    os_server:
-#      cloud:            "{{ openstack_cloud                           | default('openstack') }}"
-#      name:             "{{ __openstack_server.instance_name }}"
-#      state:            "{{ openstack_server_state                    | default(__openstack_server.state) | default('present') }}"
-#      image:            "{{ __openstack_server.image                  | default('rhel-guest') }}"
-#      flavor:           "{{ __openstack_server.flavor                 | default('m1.medium') }}"
-#      key_name:         "{{ __openstack_server.key_name               | default('ansible_ssh') }}"
-#      wait:             "{{ __openstack_server.wait                   | default('yes') }}"
-#      security_groups:  "{{ __openstack_server.security_group_name }}"
-#      delete_fip:       "{{__openstack_server.delete_fip              | default(true) }}"
-#      meta: "group={{ __openstack_server.meta.group }},deployment_name={{ __openstack_server.meta.deployment }}"
-#      nics:
-#        - net-name: int_network
-#        #    - net-name: ext_network
-#      userdata: |
-#        #!/bin/bash
-#        curl -o /tmp/openstack.pub http://www.opentlc.com/download/ansible_bootcamp/openstack_keys/openstack.pub
-#        cat /tmp/openstack.pub >> /home/cloud-user/.ssh/authorized_keys
-#    loop: "{{ osup_servers }}"      
-#    loop_control:
-#      loop_var: __openstack_server
-#    async: 900
-#    poll: 0
-#    register: r_instances
-#  - name: Fetch Instance Info
-#       os_server_info:
-#        cloud: openstack
-#       register: result
-#     - name: Display all variables/facts known for a host
-#       debug:
-#         msg: IP is "{{ item.public_v4 }}" and groups are "{{ item.metadata.group }}"
-#     loop: "{{ r_instances.openstack_servers }}"
+      msg: "{{ item.value.name }}  {{item.value.state}} {{item.value.image}} {{item.value.flavor}} {{item.value.key_name}} {{item.value.security_group}} {{item.value.meta[0].group}} {{item.value.meta[0].deployment_name}}" 
+    loop: "{{ osp_servers | dict2items }}"
+  - name: Create server instances
+    os_server:
+      cloud:            "{{ openstack_cloud                           | default('openstack') }}"
+      name:             "{{ item.value.name }}"
+      state:            "{{ item.value.state                    |  default('present') }}"
+      image:            "{{ item.value.image                  | default('rhel-guest') }}"
+      flavor:           "{{ item.value.flavor                 | default('m1.medium') }}"
+      key_name:         "{{ item.value.key_name               | default('ansible_ssh') }}"
+      wait:             "{{ item.value.wait                   | default('yes') }}"
+      security_groups:  "{{ item.value.security_group }}"
+      delete_fip:       "{{item.value.delete_fip              | default(true) }}"
+      meta: "group={{ item.value.meta[0].group }},deployment_name={{ item.value.meta[0].deployment_name }}"
+      nics:
+        - net-name: int_network
+        #    - net-name: ext_network
+      userdata: |
+        #!/bin/bash
+        curl -o /tmp/openstack.pub http://www.opentlc.com/download/ansible_bootcamp/openstack_keys/openstack.pub
+        cat /tmp/openstack.pub >> /home/cloud-user/.ssh/authorized_keys
+    loop: "{{ osp_servers | dict2items }}"      
+    async: 900
+    poll: 0
+    register: r_instances
+  - name: Fetch Instance Info
+    os_server_info:
+      cloud: openstack
+    register: result
+  - name: Display all variables/facts known for a host
+    debug:
+       msg: IP is "{{ item.public_v4 }}" and groups are "{{ item.metadata.group }}"
+    loop: "{{ r_instances.openstack_servers }}"
