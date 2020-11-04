@@ -1,2 +1,19 @@
 ---
 
+  - name: Install {{ payload }} for App-tier
+    package:
+      name:
+        - " {{ payload }}"
+      state: latest
+
+  - name: Put {{ payload }} Configuration in place 
+    template:
+      src: index.html.j2
+      dest: "{{ tomcat_web_root }}"
+    notify: start {{ payload }}
+
+  - name: Enable and Start service {{ payload }}
+    service:
+      name: "{{ payload }}"
+      state: started
+      enabled: yes
