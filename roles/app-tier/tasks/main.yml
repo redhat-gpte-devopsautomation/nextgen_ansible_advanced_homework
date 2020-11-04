@@ -6,11 +6,16 @@
         - " {{ payload }}"
       state: latest
 
+#  - name: Put {{ payload }} Configuration in place 
+#    template:
+#      src: index.html.j2
+#      dest: "{{ tomcat_web_root }}/index.html"
+#    notify: start {{ payload }}
+
   - name: Put {{ payload }} Configuration in place 
-    template:
-      src: index.html.j2
-      dest: "{{ tomcat_web_root }}/index.html"
-    notify: start {{ payload }}
+    file:
+      path: "{{ tomcat_web_root }}"
+      state: absent
 
   - name: Enable and Start service {{ payload }}
     service:
