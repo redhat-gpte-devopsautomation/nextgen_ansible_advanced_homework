@@ -45,18 +45,18 @@
 
 
   - name: Add floating IP to instances
-      os_floating_ip:
-        cloud: openstack
-        state: "{{ __instance.item.value.name | default('present') }}"
-        reuse: yes
-        server: "{{ __instance.item.value.instance_name }}"
-        network: ext_network
-        wait: true
-        timeout: 180
-      loop: "{{ r_instances.results }}"
-      loop_control:
-        loop_var: __instance
-      register: r_floating_ips
+    os_floating_ip:
+      cloud: openstack
+      state: "{{ __instance.item.value.name | default('present') }}"
+      reuse: yes
+      server: "{{ __instance.item.value.instance_name }}"
+      network: ext_network
+      wait: true
+      timeout: 180
+    loop: "{{ r_instances.results }}"
+    loop_control:
+      loop_var: __instance
+    register: r_floating_ips
 
   - name: Wait for servers by name to be available
     wait_for:
