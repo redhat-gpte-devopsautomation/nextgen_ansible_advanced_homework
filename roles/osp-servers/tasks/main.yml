@@ -42,15 +42,45 @@
     loop: "{{ r_instances.results }}"
     loop_control:
       loop_var: __instance
-      
-  - name: Fetch Instance Info
-    os_server_info:
-      cloud: openstack
-    register: result
 
-  - name: Display all variables/facts known for a host
-    debug:
-       var:  __osp.public_v4 
-    loop: "{{ result.openstack_servers }}"
-    loop_control:
-      loop_var: __osp
+  - when: openstack_server_state != 'absent' | default(true)
+    block:
+
+      - name: Add floating IP to instances
+        os_floating_ip:
+          cloud: openstack
+          state: "{{ openstack_server_state | default('present') }}"
+          reuse: yes
+          server: "{{ __instance.__openstack_server.instance_name }}"
+          network: ext_network
+          wait: true
+          timeout: 180
+        loop: "{{ r_instances.results }}"
+        loop_control:
+          loop_var: __instance
+        register: r_floating_ips
+
+      - name: Wait for servers by name to be available
+        wait_for:
+          host: "{{ __fip.floating_ip.floating_ip_address }}"
+          port: 22
+          search_regex: OpenSSH
+          timeout: 600
+        loop: "{{ r_floating_ips.results }}"
+        loop_control:
+          loop_var: __fip
+        delegate_to: "{{ inventory_hostname }}"
+
+
+      
+# - name: Fetch Instance Info
+#    os_server_info:
+#      cloud: openstack
+#    register: result
+#
+#  - name: Display all variables/facts known for a host
+#    debug:
+#       msg: " Public IP is {{ __osp.public_v4 }}"
+#    loop: "{{ result.openstack_servers }}"
+#    loop_control:
+#      loop_var: __osp
