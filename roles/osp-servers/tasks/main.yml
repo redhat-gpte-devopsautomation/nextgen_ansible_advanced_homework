@@ -50,5 +50,7 @@
 
   - name: Display all variables/facts known for a host
     debug:
-       msg: IP is "{{ result }}"
-    #loop: "{{ result }}"
+       msg: IP is "{{ _osp.name }}"
+    loop: "{{ result.openstack_servers }}"
+    loop_control:
+      loop_var: __osp
