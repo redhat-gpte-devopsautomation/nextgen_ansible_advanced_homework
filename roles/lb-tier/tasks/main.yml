@@ -1,3 +1,19 @@
 ---
+  - name: Install the for load-balancer
+    package:
+      name:
+        - " {{ payload }}"
+      state: latest
+    register: result
 
+  - name: Template a file to /etc/files.conf
+    template:
+      src: haproxy.cfg.j2
+      dest: /etc/haproxy/haproxy.cfg
+    notify: start {{ payload }}
 
+  - name: Enable and Start service {{ payload }}
+    service:
+      name: "{{ payload }}"
+      state: started
+      enabled: yes
