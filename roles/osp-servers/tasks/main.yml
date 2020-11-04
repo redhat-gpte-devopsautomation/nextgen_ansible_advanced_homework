@@ -49,7 +49,7 @@
       cloud: openstack
       state: "{{ __instance.item.value.name | default('present') }}"
       reuse: yes
-      server: "{{ __instance.item.value.instance_name }}"
+      server: "{{ __instance.item.value.name }}"
       network: ext_network
       wait: true
       timeout: 180
