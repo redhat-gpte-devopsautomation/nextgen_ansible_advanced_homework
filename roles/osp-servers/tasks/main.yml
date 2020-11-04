@@ -39,7 +39,6 @@
   - name: Debug Instances Created on OSP
     debug:
       msg: "Instance name is {{__instance.item.value.name}}"
-      verbosity: 2
     loop: "{{ r_instances.results }}"
     loop_control:
       loop_var: __instance
@@ -51,8 +50,7 @@
 
   - name: Display all variables/facts known for a host
     debug:
-       msg: IP is "{{ __osp.name }}"
-       verbosity: 2
+       var:  __osp.public_v4 
     loop: "{{ result.openstack_servers }}"
     loop_control:
       loop_var: __osp
