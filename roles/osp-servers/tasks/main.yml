@@ -28,13 +28,26 @@
     async: 1200
     poll: 0
     register: r_instances
-  - name: debug
+
+  - name: Wait for async OSP instance creation to complete
+    async_status: "jid={{ item.ansible_job_id }}"
+    register: r_wait
+    until: r_wait.finished
+    retries: 900
+    loop: "{{ r_instances.results }}"
+
+  - name: Debug Instances Created on OSP
     debug:
-      msg: "{{r_instances}}"
+      msg: "Instance name is {{__instance.item.value.name}}"
+    loop: "{{ r_instances.results }}"
+    loop_control:
+      loop_var: __instance
+      
   - name: Fetch Instance Info
     os_server_info:
       cloud: openstack
     register: result
+
   - name: Display all variables/facts known for a host
     debug:
        msg: IP is "{{ result }}"
