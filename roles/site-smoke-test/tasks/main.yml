@@ -1,0 +1,14 @@
+---
+# tasks file for roles/site-smoke-test
+- name: Collect info
+  become: yes
+#    service:
+#      name: postgres
+#      state: started
+  become_user: postgres
+  postgresql_info:
+    db: flask_db
+#      filter:
+#      - tablesp*
+#      - repl_sl*
+

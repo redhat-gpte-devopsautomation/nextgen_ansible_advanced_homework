@@ -1,38 +1,12 @@
-#- hosts: localhost
-#  gather_facts: false
-#  vars:
-#    OSP_GUID: "{{ lookup('env','OSP_GUID') }}"
-#    OSP_DOMAIN: "{{ lookup('env','OSP_DOMAIN') }}"
-#  tasks:
-#  - name: Create In-memory Inventory
-#    add_host:
-#      name: workstation-{{ OSP_GUID }}.{{ OSP_DOMAIN }}
-#      group: workstation
-#      ansible_ssh_private_key_file: ~/.ssh/openstack.pem
-#      ansible_ssh_user: cloud-user
-
 - hosts: workstation
-  gather_facts: false
-  tasks:
-  - name: OpenStack servers
-    os_server_info:
-      cloud: openstack
-      server: 'frontend'
-    register: openstack_info
+  gather_facts: true
+  roles:
+  - name: osp-facts
 
-  - name: Test Website availabilty via frontend
-    uri:
-      url: "http://{{ item.public_v4 }}"
-      status_code: 200
-      return_content: yes
-    when: 'item.hostname == "frontend"'
-    loop: "{{ openstack_info.openstack_servers }}"
-    register: qa_webpage
-    ignore_errors: yes
+# Smoke Test
 
-
-  - name: Fail if 'Ansible has done its job' is not in the page content
-    fail:
-    when: "'Ansible has done its job' not in qa_webpage.results[0].content"
-    tags:
-      - osp.smoke
+- name: smoke test database tier
+  become: yes
+  hosts: appdbs
+  roles:
+    - {name: site-smoke-test, tags: smoke-test}
