@@ -6,6 +6,12 @@
         - " {{ payload }}"
       state: latest
 
+  - name: Create {{ tomcat_web_root}} directory for {{ payload }} 
+    file:
+      path: "{{ tomcat_web_root }}"
+      state: directory
+      mode: '0755'
+
   - name: Put {{ payload }} Configuration in place 
     template:
       src: index.html.j2
