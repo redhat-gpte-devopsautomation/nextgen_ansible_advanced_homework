@@ -5,8 +5,14 @@
 
 # Smoke Test
 
+- name: smoke test app tier via accessing load balancer
+  become: yes
+  hosts: frontends
+  roles:
+    - {name: site-smoke-test, vars: { type: "lb" }, tags: smoke-test}
+
 - name: smoke test database tier
   become: yes
   hosts: appdbs
   roles:
-    - {name: site-smoke-test, tags: smoke-test}
+    - {name: site-smoke-test, vars: { type: "db" }, tags: smoke-test}

@@ -1,0 +1,42 @@
+---
+# tasks file for roles/site-smoke-test
+#- name: Collect info
+- when: type == 'db'
+  name: Collect info
+  become: yes
+  become_user: postgres
+  postgresql_info:
+    db: flask_db
+    filter:
+      - tablespaces
+#      - repl_sl*
+#
+- when: type == 'db'
+  name: Create test_table with 3 columns in default tablespace
+  become: yes
+  become_user: postgres
+  postgresql_table:
+    db: flask_db
+    name: test_table
+    columns:
+    - id bigserial primary key
+    - num bigint
+    - stories text
+
+
+- when: type == 'db'
+  name: Insert query to test_table in db flask_db
+  become: yes
+  become_user: postgres
+  postgresql_query:
+    db: flask_db
+    query: INSERT INTO test_table (num, stories) VALUES (2, 'test info')
+
+
+- when: type == 'db'
+  name: Select query to db flask_db with positional arguments and non-default credentials
+  become: yes
+  become_user: postgres
+  postgresql_query:
+    db: flask_db
+    query: SELECT * FROM test_table 
