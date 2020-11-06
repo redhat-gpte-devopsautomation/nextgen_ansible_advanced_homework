@@ -37,8 +37,8 @@
   block: 
       - name: Test Website availabilty via frontend
         uri:
-#          url: "http://{{ frontends.public_v4 }}"
-          url: "http://localhost"
+#          url: "http://{{ item }}"
+#          url: "http://localhost"
           status_code: 200
           return_content: yes
 #        when: 'item.hostname == "frontend"'
