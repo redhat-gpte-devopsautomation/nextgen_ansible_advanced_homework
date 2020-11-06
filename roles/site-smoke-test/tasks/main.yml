@@ -43,8 +43,6 @@
 #        when: 'item.hostname == "frontend"'
         loop: "{{ result.openstack_servers }}"
         delegate_to: workstation
-
-        loop: frontends
         register: qa_webpage
         ignore_errors: yes
 
