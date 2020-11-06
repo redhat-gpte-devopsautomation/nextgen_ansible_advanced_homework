@@ -41,7 +41,7 @@
           status_code: 200
           return_content: yes
 #        when: 'item.hostname == "frontend"'
-        loop: "{{ result.openstack_servers }}"
+#        loop: "{{ result.openstack_servers }}"
         delegate_to: workstation
         register: qa_webpage
         ignore_errors: yes
