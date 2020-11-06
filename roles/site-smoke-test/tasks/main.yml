@@ -32,24 +32,24 @@
           db: flask_db
           query: SELECT * FROM test_table 
 
-
-- when: type == 'lb'
-  block: 
-      - name: Test Website availabilty via frontend
-        uri:
-          url: "http://{{ item }}"
-#          url: "http://localhost"
-          status_code: 200
-          return_content: yes
-#        when: 'item.hostname == "frontend"'
-        loop: "{{ groups.frontends }}"
-        delegate_to: workstation
-        register: qa_webpage
-        ignore_errors: yes
-
-
-      - name: Fail if 'Ansible has done its job' is not in the page content
-        fail:
-        when: "'Ansible has done its job' not in qa_webpage.results[0].content"
-        tags:
-          - osp.smoke
+#
+#- when: type == 'lb'
+#  block: 
+#      - name: Test Website availabilty via frontend
+#        uri:
+#          url: "http://{{ item }}"
+##          url: "http://localhost"
+#          status_code: 200
+#          return_content: yes
+##        when: 'item.hostname == "frontend"'
+#        loop: "{{ groups.frontends }}"
+#        delegate_to: workstation
+#        register: qa_webpage
+#        ignore_errors: yes
+#
+#
+#      - name: Fail if 'Ansible has done its job' is not in the page content
+#        fail:
+#        when: "'Ansible has done its job' not in qa_webpage.results[0].content"
+#        tags:
+#          - osp.smoke

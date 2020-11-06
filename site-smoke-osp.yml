@@ -5,23 +5,35 @@
 
 # Smoke Test
 
-- name: smoke test app tier via accessing load balancer
-  become: yes
-  hosts: frontends
-  roles:
-    - {name: site-smoke-test, vars: { type: "lb" }, tags: smoke-test}
-
-#- hosts: workstation
-#  gather_facts: false
-#  tasks:
-#  - name: OpenStack servers
-#    os_server_info:
-#      cloud: openstack
-#      server: 'frontend'
-#    register: openstack_info
-
 - name: smoke test database tier
   become: yes
   hosts: appdbs
   roles:
     - {name: site-smoke-test, vars: { type: "db" }, tags: smoke-test}
+
+# Smoke Test lb tier
+- hosts: workstation
+  gather_facts: false
+  tasks:
+  - name: OpenStack servers
+    os_server_info:
+      cloud: openstack
+      server: 'frontend'
+    register: openstack_info
+
+  - name: Test Website availabilty via frontend
+    uri:
+      url: "http://{{ item.public_v4 }}"
+      status_code: 200
+      return_content: yes
+    when: 'item.hostname == "frontend"'
+    loop: "{{ openstack_info.openstack_servers }}"
+    register: qa_webpage
+    ignore_errors: yes
+
+
+  - name: Fail if 'Ansible has done its job' is not in the page content
+    fail:
+    when: "'Ansible has done its job' not in qa_webpage.results[0].content"
+    tags:
+      - osp.smoke
