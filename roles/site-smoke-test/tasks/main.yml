@@ -5,7 +5,7 @@
   become_user: postgres
   postgresql_info:
     db: flask_db
-      filter:
+    filter:
       - tablespaces
 #      - repl_sl*
 
