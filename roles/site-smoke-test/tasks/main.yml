@@ -26,7 +26,7 @@
   become_user: postgres
   postgresql_query:
     db: flask_db
-    query: INSERT INTO test_table (id, story) VALUES (2, 'test info')
+    query: INSERT INTO test_table (num, stories) VALUES (2, 'test info')
 
 
 - name: Select query to db flask_db with positional arguments and non-default credentials
