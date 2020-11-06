@@ -13,4 +13,4 @@
      loop: "{{ result.openstack_servers }}"
      loop_control:
        loop_var: __osp
-     when: result.openstack_servers.metadata.deployment_group  == 'QA' 
+     when: result.openstack_servers.metadata.deployment_name  == 'QA' 
