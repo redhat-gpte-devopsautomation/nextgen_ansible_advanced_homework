@@ -38,7 +38,7 @@
       - name: Test Website availabilty via frontend
         uri:
 #          url: "http://{{ frontends.public_v4 }}"
-          url: "http://{{ hostvars.item.public_v4 }}"
+          url: "http://{{ hostvars.item.host_name }}"
           status_code: 200
           return_content: yes
 #        when: 'item.hostname == "frontend"'
