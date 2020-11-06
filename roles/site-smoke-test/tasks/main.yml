@@ -41,7 +41,7 @@
           status_code: 200
           return_content: yes
 #        when: 'item.hostname == "frontend"'
-        loop: "{{ frontends }}"
+        loop: frontends
         register: qa_webpage
         ignore_errors: yes
 
