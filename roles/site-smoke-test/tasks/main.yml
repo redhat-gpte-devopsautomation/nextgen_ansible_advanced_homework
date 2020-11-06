@@ -43,7 +43,7 @@
           return_content: yes
 #        when: 'item.hostname == "frontend"'
         loop: "{{ groups.frontends }}"
-#        delegate_to: workstation
+        delegate_to: workstation
         register: qa_webpage
         ignore_errors: yes
 
