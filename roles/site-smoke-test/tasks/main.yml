@@ -37,11 +37,12 @@
   block: 
       - name: Test Website availabilty via frontend
         uri:
-          url: "http://{{ item.public_v4 }}"
+#          url: "http://{{ frontends.public_v4 }}"
+          url: "http://{{ hostvars.item.public_v4 }}"
           status_code: 200
           return_content: yes
 #        when: 'item.hostname == "frontend"'
-#        loop: "{{ result.openstack_servers }}"
+        loop: "{{ groups.frontends }}"
         delegate_to: workstation
         register: qa_webpage
         ignore_errors: yes
