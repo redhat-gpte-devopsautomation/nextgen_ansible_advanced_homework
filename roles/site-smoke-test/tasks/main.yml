@@ -8,4 +8,33 @@
     filter:
       - tablespaces
 #      - repl_sl*
+#
+- name: Create test_table with 3 columns in default tablespace
+  become: yes
+  become_user: postgres
+  postgresql_table:
+    db: flask_db
+    name: test_table
+    columns:
+    - id bigserial primary key
+    - num bigint
+    - stories text
 
+
+- name: Insert query to test_table in db flask_db
+  become: yes
+  become_user: postgres
+  postgresql_query:
+    db: flask_db
+    query: INSERT INTO test_table (id, story) VALUES (2, 'test info')
+
+
+- name: Select query to db flask_db with positional arguments and non-default credentials
+  become: yes
+  become_user: postgres
+  postgresql_query:
+    db: flask_db
+    query: SELECT * FROM test_table 
+#    positional_args:
+#    - 1
+#    - test
