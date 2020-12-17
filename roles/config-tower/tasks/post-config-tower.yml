@@ -1,7 +1,15 @@
 - name: Create Homework Assignment project
+  tower_project:
+    name: "00_Homework Assignment"
+    description: "Create Assignment project"
+    organization: "Default"
+    state: present
+    scm_type: git
+    scm_url: https://github.com/lirodger1/nextgen_ansible_advanced_homework.git
+    scm_branch: homework
+    #tower_config_file: /root/nextgen_ansible_advanced_homework/ansible.cfg 
 
-
-- name: Machine Credentail to connect to workstation using openstack.pub
+- name: Machine Credential to connect to workstation using openstack.pub
   tower_credential:
     name: Connect_to_workstation
     organization: Default
@@ -19,7 +27,7 @@
 
 - name: Create Group in static inventory 
   command: |
-    tower-cli group create --inventory "{{static_inventory_name}}"  --name {{group_name}}
+    tower-cli group create --inventory "{{static_inventory_name}}"  --name "{{group_name}}"
 
 
 - name: Add tower host
@@ -37,7 +45,7 @@
   command: | 
     tower-cli host associate --host "{{host_name}}" --group "{{group_name}}"
 
-
+# TODO: remove password
 - name: Tower Creds key file
   tower_credential:
     name: "{{ opentlc_cred_name }}"
@@ -47,8 +55,8 @@
     tower_host: tower1.{{tower_GUID}}.example.opentlc.com
     tower_username: admin
     tower_password: r3dh4t1!
-    tower_verify_ssl: no
-    ssh_key_data: /root/.ssh/mykey.pem
+    tower_verify_ssl: false
+    ssh_key_data: /root/.ssh/{{tower_GUID}}key.pem
     username: "{{ opentlc_login }}"
 
 - name: Remove secret
