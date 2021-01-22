@@ -1,3 +1,180 @@
 ---
-
 # tasks file for osp.servers
+- name: test
+  debug:
+    msg: "{{ item.value.name }}"
+  loop: "{{ lookup('dict', osp_servers) }}"
+
+- name: test2
+  debug:
+    msg: "group={{ lookup('dict', item.value.meta)[1] }},deployment_name={{ lookup('dict', item.value.meta)[1] }}"
+  loop: "{{ lookup('dict', osp_servers) }}"
+
+- name: fail
+  debug:
+    var: fail
+  failed_when: fail is not defined
+
+- name: create frontend instance
+  os_server:
+    cloud: openstack
+    name: "{{ item.value.name }}"
+    image: "{{ item.value.image }}"
+    key_name: ansible_ssh_key
+    flavor: m2.medium
+    security_groups: "{{ item.value.security_group_name }}"
+    delete_fip: yes
+    wait: no
+    nics:
+      - net-name: int_network
+    meta: "group={{ item.value.meta.group }},deployment_name={{ item.value.meta.deployment_name }}"
+    userdata: |
+      #!/bin/bash
+      curl -o /tmp/openstack.pub http://www.opentlc.com/download/ansible_bootcamp/openstack_keys/openstack.pub
+      cat /tmp/openstack.pub >> /home/cloud-user/.ssh/authorized_keys
+      curl -o /home/cloud-user/.ssh/openstack.pem http://www.opentlc.com/download/ansible_bootcamp/openstack_keys/openstack.pem
+      chown cloud-user. /home/cloud-user/.ssh/openstack.pem
+      chmod 0400 /home/cloud-user/.ssh/openstack.pem
+      curl -o /etc/yum.repos.d/internal.repo http://www.opentlc.com/download/ansible_bootcamp/repo/internal.repo
+  loop: "{{ lookup('dict', osp_servers) }}"
+
+- name: Add floating IP to db instance
+  os_floating_ip:
+    cloud: openstack
+    state: present
+    reuse: yes
+    server: "{{ item.value.name }}"
+    network: ext_network
+    wait: true
+    timeout: 200
+  loop: "{{ lookup('dict', osp_servers) }}"
+
+#
+#- name: create frontend instance
+#  os_server:
+#    cloud: openstack
+#    name: "{{ osp_servers.frontend.instance_name }}"
+#    image: "{{ osp_servers.frontend.image }}"
+#    key_name: ansible_ssh_key
+#    flavor: m2.medium
+#    security_groups: "{{ osp_servers.frontend.security_group_name }}"
+#    delete_fip: yes
+#    wait: no
+#    nics:
+#      - net-name: int_network
+#    meta: "group={{ osp_servers.frontend.meta.group }},deployment_name={{ osp_servers.frontend.meta.deployment_name }}"
+#    userdata: |
+#      #!/bin/bash
+#      curl -o /tmp/openstack.pub http://www.opentlc.com/download/ansible_bootcamp/openstack_keys/openstack.pub
+#      cat /tmp/openstack.pub >> /home/cloud-user/.ssh/authorized_keys
+#      curl -o /home/cloud-user/.ssh/openstack.pem http://www.opentlc.com/download/ansible_bootcamp/openstack_keys/openstack.pem
+#      chown cloud-user. /home/cloud-user/.ssh/openstack.pem
+#      chmod 0400 /home/cloud-user/.ssh/openstack.pem
+#      curl -o /etc/yum.repos.d/internal.repo http://www.opentlc.com/download/ansible_bootcamp/repo/internal.repo
+#
+#- name: create app1 instance
+#  os_server:
+#    cloud: openstack
+#    name: "{{ osp_servers.app1.instance_name }}"
+#    image: "{{ osp_servers.app1.image }}"
+#    key_name: ansible_ssh_key
+#    flavor: m2.medium
+#    security_groups: "{{ osp_servers.app1.security_group_name }}"
+#    delete_fip: yes
+#    wait: no
+#    nics:
+#      - net-name: int_network
+#    meta: "group={{ osp_servers.app1.meta.group }},deployment_name={{ osp_servers.app1.meta.deployment_name }}"
+#    userdata: |
+#      #!/bin/bash
+#      curl -o /tmp/openstack.pub http://www.opentlc.com/download/ansible_bootcamp/openstack_keys/openstack.pub
+#      cat /tmp/openstack.pub >> /home/cloud-user/.ssh/authorized_keys
+#      curl -o /home/cloud-user/.ssh/openstack.pem http://www.opentlc.com/download/ansible_bootcamp/openstack_keys/openstack.pem
+#      chown cloud-user. /home/cloud-user/.ssh/openstack.pem
+#      chmod 0400 /home/cloud-user/.ssh/openstack.pem
+#      curl -o /etc/yum.repos.d/internal.repo http://www.opentlc.com/download/ansible_bootcamp/repo/internal.repo
+#
+#- name: create app2 instance
+#  os_server:
+#    cloud: openstack
+#    name: "{{ osp_servers.app2.instance_name }}"
+#    image: "{{ osp_servers.app2.image }}"
+#    key_name: ansible_ssh_key
+#    flavor: m2.medium
+#    security_groups: "{{ osp_servers.app2.security_group_name }}"
+#    delete_fip: yes
+#    wait: no
+#    nics:
+#      - net-name: int_network
+#    meta: "group={{ osp_servers.app2.meta.group }},deployment_name={{ osp_servers.app2.meta.deployment_name }}"
+#    userdata: |
+#      #!/bin/bash
+#      curl -o /tmp/openstack.pub http://www.opentlc.com/download/ansible_bootcamp/openstack_keys/openstack.pub
+#      cat /tmp/openstack.pub >> /home/cloud-user/.ssh/authorized_keys
+#      curl -o /home/cloud-user/.ssh/openstack.pem http://www.opentlc.com/download/ansible_bootcamp/openstack_keys/openstack.pem
+#      chown cloud-user. /home/cloud-user/.ssh/openstack.pem
+#      chmod 0400 /home/cloud-user/.ssh/openstack.pem
+#      curl -o /etc/yum.repos.d/internal.repo http://www.opentlc.com/download/ansible_bootcamp/repo/internal.repo
+#
+#- name: create db instance
+#  os_server:
+#    cloud: openstack
+#    name: "{{ osp_servers.db.instance_name }}"
+#    image: "{{ osp_servers.db.image }}"
+#    key_name: ansible_ssh_key
+#    flavor: m2.medium
+#    security_groups: "{{ osp_servers.db.security_group_name }}"
+#    delete_fip: yes
+#    wait: no
+#    nics:
+#      - net-name: int_network
+#    meta: "group={{ osp_servers.db.meta.group }},deployment_name={{ osp_servers.db.meta.deployment_name }}"
+#    userdata: |
+#      #!/bin/bash
+#      curl -o /tmp/openstack.pub http://www.opentlc.com/download/ansible_bootcamp/openstack_keys/openstack.pub
+#      cat /tmp/openstack.pub >> /home/cloud-user/.ssh/authorized_keys
+#      curl -o /home/cloud-user/.ssh/openstack.pem http://www.opentlc.com/download/ansible_bootcamp/openstack_keys/openstack.pem
+#      chown cloud-user. /home/cloud-user/.ssh/openstack.pem
+#      chmod 0400 /home/cloud-user/.ssh/openstack.pem
+#      curl -o /etc/yum.repos.d/internal.repo http://www.opentlc.com/download/ansible_bootcamp/repo/internal.repo
+#
+#- name: Add floating IP to frontend instance
+#  os_floating_ip:
+#    cloud: openstack
+#    state: present
+#    reuse: yes
+#    server: "{{ osp_servers.frontend.instance_name }}"
+#    network: ext_network
+#    wait: true
+#    timeout: 200
+#
+#- name: Add floating IP to app1 instance
+#  os_floating_ip:
+#    cloud: openstack
+#    state: present
+#    reuse: yes
+#    server: "{{ osp_servers.app1.instance_name }}"
+#    network: ext_network
+#    wait: true
+#    timeout: 200
+#
+#- name: Add floating IP to app2 instance
+#  os_floating_ip:
+#    cloud: openstack
+#    state: present
+#    reuse: yes
+#    server: "{{ osp_servers.app2.instance_name }}"
+#    network: ext_network
+#    wait: true
+#    timeout: 200
+#
+#- name: Add floating IP to db instance
+#  os_floating_ip:
+#    cloud: openstack
+#    state: present
+#    reuse: yes
+#    server: "{{ osp_servers.db.instance_name }}"
+#    network: ext_network
+#    wait: true
+#    timeout: 200
+#
