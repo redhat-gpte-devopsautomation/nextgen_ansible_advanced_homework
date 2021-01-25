@@ -1,7 +1,17 @@
 - name: Create Homework Assignment project
+  tower_project:
+    name: "{{ proj_name }}"
+    description: "home work project"
+    organization: "{{ org_name }}"
+    state: present
+    scm_url: https://github.com/rhjcd/nextgen_ansible_advanced_homework.git
+    scm_type: git
+    tower_host: tower1.{{tower_GUID}}.example.opentlc.com
+    tower_username: admin
+    tower_password: r3dh4t1!
+    tower_verify_ssl: no
 
-
-- name: Machine Credentail to connect to workstation using openstack.pub
+- name: Machine Credential to connect to workstation using openstack.pub
   tower_credential:
     name: Connect_to_workstation
     organization: Default
@@ -10,23 +20,24 @@
     tower_host: tower1.{{tower_GUID}}.example.opentlc.com
     tower_username: admin
     tower_password: r3dh4t1!
+    #tower_config_file: "~/.tower_cli.cfg"
     ssh_key_data: "/root/.ssh/openstack.pem"
+    tower_verify_ssl: no
     username: cloud-user
 
 - name: Create Inventory
   command: |
-    tower-cli inventory create -n "{{static_inventory_name}}" --organization "{{org_name}}"
+    tower-cli inventory create -n "{{ static_inventory_name }}" --organization "{{ org_name }}"
 
 - name: Create Group in static inventory 
   command: |
-    tower-cli group create --inventory "{{static_inventory_name}}"  --name {{group_name}}
-
+    tower-cli group create --inventory "{{ static_inventory_name }}"  --name "{{ group_name }}"
 
 - name: Add tower host
   tower_host:
-    name: "{{host_name}}"
+    name: "{{ host_name }}"
     description: "workstation"
-    inventory: "{{static_inventory_name}}"
+    inventory: "{{ static_inventory_name }}"
     state: present
     tower_host: tower1.{{tower_GUID}}.example.opentlc.com
     tower_username: admin
@@ -35,8 +46,7 @@
 
 - name: Associate workstation host to group 
   command: | 
-    tower-cli host associate --host "{{host_name}}" --group "{{group_name}}"
-
+    tower-cli host associate --host "{{ host_name }}" --group "{{group_name}}"
 
 - name: Tower Creds key file
   tower_credential:

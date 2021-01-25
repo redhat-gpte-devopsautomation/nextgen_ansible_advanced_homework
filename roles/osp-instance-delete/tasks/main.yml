@@ -1,5 +1,33 @@
 ---
 # tasks file for roles/osp-instance-delete
-  - name: Fetch Instance Info
-  - name: Delete instances
-   
+- name: Fetch Instance Info
+  os_server_info:
+    cloud: openstack
+    region_name: regionOne
+  register: r_os_servers
+
+- name: Add host
+  add_host:
+    name: "{{ item.public_v4 }}"
+    group:
+      - "{{ item.metadata.group }}"
+      - "{{ item.metadata.deployment_name }}"
+  loop: "{{ r_os_servers.openstack_servers }}"
+
+- name: delete floating IP to db instance
+  os_floating_ip:
+    cloud: openstack
+    state: absent
+    reuse: yes
+    server: "{{ item.name }}"
+    network: ext_network
+    wait: true
+    timeout: 200
+  loop: "{{ r_os_servers.openstack_servers }}"
+
+- name: Delete instances
+  os_server:
+    cloud: openstack
+    name: "{{ item.name }}"
+    state: absent
+  loop: "{{ r_os_servers.openstack_servers }}"

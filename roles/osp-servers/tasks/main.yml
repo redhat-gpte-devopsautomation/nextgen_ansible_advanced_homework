@@ -1,3 +1,40 @@
 ---
-
 # tasks file for osp.servers
+- name: test
+  debug:
+    msg:              "{{ item.value.name }}"
+  loop:               "{{ lookup('dict', osp_servers) }}"
+
+- name: create frontend instance
+  os_server:
+    cloud: openstack
+    name:             "{{ item.value.name }}"
+    image:            "{{ item.value.image }}"
+    key_name:         "{{ item.value.key_name }}"
+    flavor:           "{{ item.value.flavor }}"
+    security_groups:  "{{ item.value.security_group }}"
+    delete_fip: yes
+    wait: no
+    nics:
+      - net-name: int_network
+    meta: "group={{ item.value.group }},deployment_name={{ item.value.deployment_name }}"
+    userdata: |
+      #!/bin/bash
+      curl -o /tmp/openstack.pub http://www.opentlc.com/download/ansible_bootcamp/openstack_keys/openstack.pub
+      cat /tmp/openstack.pub >> /home/cloud-user/.ssh/authorized_keys
+      curl -o /home/cloud-user/.ssh/openstack.pem http://www.opentlc.com/download/ansible_bootcamp/openstack_keys/openstack.pem
+      chown cloud-user. /home/cloud-user/.ssh/openstack.pem
+      chmod 0400 /home/cloud-user/.ssh/openstack.pem
+      curl -o /etc/yum.repos.d/internal.repo http://www.opentlc.com/download/ansible_bootcamp/repo/internal.repo
+  loop: "{{ lookup('dict', osp_servers) }}"
+
+- name: Add floating IP to db instance
+  os_floating_ip:
+    cloud: openstack
+    state: present
+    reuse: yes
+    server: "{{ item.value.name }}"
+    network: ext_network
+    wait: true
+    timeout: 200
+  loop: "{{ lookup('dict', osp_servers) }}"
