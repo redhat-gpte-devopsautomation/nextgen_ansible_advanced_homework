@@ -1,5 +1,11 @@
-- name: Create Homework Assignment project
-
+- name: "Create Homework Assignment project"
+  tower_project:
+    name: "Homework Assignment"
+    description: "Homework Assignment"
+    organization: Default
+    scm_type: git
+    scm_url: "https://github.com/sliphup/nextgen_ansible_advanced_homework.git"
+    state: present
 
 - name: Machine Credentail to connect to workstation using openstack.pub
   tower_credential:
@@ -50,7 +56,6 @@
     tower_verify_ssl: no
     ssh_key_data: /root/.ssh/mykey.pem
     username: "{{ opentlc_login }}"
-
 - name: Remove secret
   file:
     name: /root/secret.pem
