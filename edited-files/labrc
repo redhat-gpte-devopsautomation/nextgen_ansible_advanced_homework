@@ -1,0 +1,9 @@
+export TOWER_GUID="21dc"
+export OSP_GUID="9a1f"
+export OSP_DOMAIN="dynamic.opentlc.com"
+export OPENTLC_ID="jangerrit.kootstra_kpn.com"
+export MAIL_ID="jangerrit.kootstra@kpn.com"
+export OPENTLC_PASSWORD="Jgk671221!"
+export GITHUB_REPO=https://github.com/jgkootstra/nextgen_ansible_advanced_homework.git
+export JQ_REPO_BASE=http://www.opentlc.com/download/ansible_bootcamp
+export REGION=us-east-1
