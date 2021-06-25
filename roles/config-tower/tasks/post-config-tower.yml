@@ -1,6 +1,6 @@
 - name: "Create Homework Assignment project"
   tower_project:
-    name: "Homework Assignment"
+    name: "00_Homework Assignment"
     description: "Homework Assignment"
     organization: Default
     scm_type: git
