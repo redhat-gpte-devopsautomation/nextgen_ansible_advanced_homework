@@ -1,4 +1,4 @@
-me: openstack_security_groups is not defined
+-name: openstack_security_groups is not defined
   debug:
     msg: openstack_security_groups is not defined
 

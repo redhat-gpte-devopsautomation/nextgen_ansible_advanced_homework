@@ -1,4 +1,4 @@
-me: openstack_images is not defined
+-name: openstack_images is not defined
   debug:
     msg: openstack_images is not defined
 

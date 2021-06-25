@@ -1,4 +1,4 @@
-me: Run when openstack_flavors is not defined
+-name: Run when openstack_flavors is not defined
   debug:
     msg: Skipped when openstack_flavors is not defined
 

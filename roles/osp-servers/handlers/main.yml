@@ -1,2 +1,10 @@
----
 # handlers file for osp.servers
+    - name: restart_haproxy
+      service:
+        name: haproxy
+        state: restarted
+
+    - name: restart_postgres
+      service:
+        name: "{{ postgres_service }}"
+        state: restarted

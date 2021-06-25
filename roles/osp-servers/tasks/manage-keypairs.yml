@@ -1,4 +1,4 @@
-me: openstack_keypair is not defined
+-name: openstack_keypair is not defined
   debug:
     msg: openstack_keypair is not defined
 
