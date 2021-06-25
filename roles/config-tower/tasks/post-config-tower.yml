@@ -4,8 +4,11 @@
     description: "Homework Assignment"
     organization: Default
     scm_type: git
-    scm_url: "https://github.com/sliphup/nextgen_ansible_advanced_homework.git"
+    scm_url: "https://github.com/jgkootstra/nextgen_ansible_advanced_homework.git"
     state: present
+    tower_host: tower1.{{tower_GUID}}.example.opentlc.com
+    tower_username: admin
+    tower_password: "r3dh4t1!"
 
 - name: Machine Credentail to connect to workstation using openstack.pub
   tower_credential:
