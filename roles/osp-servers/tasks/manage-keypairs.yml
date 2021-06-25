@@ -1,0 +1,31 @@
+me: openstack_keypair is not defined
+  debug:
+    msg: openstack_keypair is not defined
+
+- when: openstack_keypair is defined
+  name: Manage openstack keypair
+  block:
+
+    - name: Generate keyfile 
+      user:
+        name:               "x{{ ansible_env.USER }}"
+        generate_ssh_key:   yes
+        ssh_key_file:       .ssh/ansible_ssh_key
+
+    - name: Delete OSP keypair first if present
+      os_keypair:
+        cloud:              "{{ openstack_keypair.cloud }}"
+        name:               "{{ openstack_keypair.name  | default('ansible_ss_key') }}"
+        state:              absent 
+
+    - name: Create OSP keypair
+      os_keypair:
+        cloud:              "{{ openstack_keypair.cloud }}"
+        state:              "{{ openstack_keypair.state | default('present') }}"
+        name:               "{{ openstack_keypair.name  | default('ansible_ssh_key') }}"
+        public_key_file:    "{{ openstack_keypair.public_key_file | default('~/.ssh/test_id_rsa.pub') }}"
+
+  tags:
+    - openstack-keypair
+
+...

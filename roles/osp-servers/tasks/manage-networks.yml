@@ -1,0 +1,59 @@
+---
+- when: openstack_networks is not defined
+  name: openstack_networks is not defined
+  debug:
+    msg: openstack_networks is not defined
+
+- when: openstack_networks is defined
+  name: Manage openstack networks
+  block: 
+
+    - name: Manage configuration of Public and Private Networks
+      os_network:
+        cloud:                        "{{ __openstack_network.cloud_name }}"
+        state:                        "{{ __openstack_network.state }}"
+        name:                         "{{ __openstack_network.network_name }}"
+        external:                     "{{ __openstack_network.external }}"
+        admin_state_up:               "{{ __openstack_network.admin_state }}"
+        provider_network_type:        "{{ __openstack_network.provider_network_type | default(omit) }}"
+        provider_physical_network:    "{{ __openstack_network.provider_physical_network | default(omit) }}"
+      loop: "{{ openstack_networks }}"
+      loop_control:
+        loop_var: __openstack_network
+
+    - name: Manage configuration of Subnets for Public and Private SubNets
+      os_subnet:
+        cloud:                        "{{ __openstack_network.cloud_name }}"
+        state:                        "{{ __openstack_network.state }}"
+        network_name:                 "{{ __openstack_network.network_name  }}"
+        name:                         "{{ __openstack_network.subnet_name  }}"
+        cidr:                         "{{ __openstack_network.cidr_network }}"
+        ip_version:                   "{{ __openstack_network.ip_version }}"
+        gateway_ip:                   "{{ __openstack_network.gateway_ip | default(omit) }}"
+        enable_dhcp:                  "{{ __openstack_network.enable_dhcp }}"
+        allocation_pool_start:        "{{ __openstack_network.allocation_pool_start | default(omit) }}"
+        allocation_pool_end:          "{{ __openstack_network.allocation_pool_end | default(omit) }}"
+        dns_nameservers:
+          - 8.8.8.8
+          - 8.8.8.7
+      loop: "{{ openstack_networks }}"
+      loop_control:
+        loop_var: __openstack_network
+
+    - name: Manage OpenStack Routers
+      os_router:
+        cloud:                        "{{ __openstack_router.cloud_name }}"
+        state:                        "{{ __openstack_router.state }}"
+        name:                         "{{ __openstack_router.name }}"
+        network:                      "{{ __openstack_router.network }}"
+        external_fixed_ips:
+          - { subnet: ext_subnet }
+        interfaces:
+          - "{{ __openstack_router.interfaces }}"
+      loop: "{{ openstack_routers }}"
+      loop_control:
+        loop_var: __openstack_router
+
+  tags:
+    - openstack-networks
+...

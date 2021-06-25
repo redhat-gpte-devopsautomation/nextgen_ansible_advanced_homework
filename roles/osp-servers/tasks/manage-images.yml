@@ -1,0 +1,32 @@
+me: openstack_images is not defined
+  debug:
+    msg: openstack_images is not defined
+
+- when: openstack_images is defined
+  block:
+
+    - name: Fetch remote openstack images
+      when: __image.fetch | bool
+      get_url:
+        url:                "{{ __image.src_url }}"
+        dest:               "{{ __image.file_name }}"
+      loop: "{{ openstack_images }}"
+      loop_control:
+        loop_var: __image
+
+    - name: Manage openstack images
+      os_image:
+        cloud:              "{{ __image.cloud            | default('openstack') }}"
+        state:              "{{ __image.state }}"
+        name:               "{{ __image.name }}"
+        container_format:   "{{ __image.container_format | default(omit) }}"
+        disk_format:        "{{ __image.disk_format      | default(omit) }}"
+        filename:           "{{ __image.file_name }}"
+      loop: "{{ openstack_images }}"
+      loop_control:
+        loop_var: __image
+
+  tags:
+    - openstack-images
+
+...

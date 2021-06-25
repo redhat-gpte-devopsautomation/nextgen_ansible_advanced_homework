@@ -1,0 +1,21 @@
+me: Run when openstack_flavors is not defined
+  debug:
+    msg: Skipped when openstack_flavors is not defined
+
+- when: openstack_flavors is defined
+  name: Manage openstack flavors
+  os_nova_flavor:
+    cloud:    "{{ __flavor.cloud | default('openstack') }}"
+    state:    "{{ __flavor.state }}"
+    name:     "{{ __flavor.name }}"
+    ram:      "{{ __flavor.ram }}"
+    vcpus:    "{{ __flavor.vcpus }}"
+    disk:     "{{ __flavor.disk }}"
+  loop: "{{ openstack_flavors }}"
+  loop_control:
+    loop_var: __flavor
+
+  tags:
+    - openstack-flavors
+
+...

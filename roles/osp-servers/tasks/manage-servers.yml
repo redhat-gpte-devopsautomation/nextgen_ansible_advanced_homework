@@ -1,0 +1,11 @@
+me: Manage OpenStack Servers
+  hosts: control_node
+  gather_facts: false
+  become: false
+  collections:
+    - tok.openstack
+
+  roles:
+
+    - openstack_manage_servers
+...
