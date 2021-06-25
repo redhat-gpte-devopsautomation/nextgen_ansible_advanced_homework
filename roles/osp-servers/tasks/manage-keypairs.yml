@@ -1,4 +1,7 @@
--name: openstack_keypair is not defined
+---
+
+- when: openstack_keypair is not defined
+  name: openstack_keypair is not defined
   debug:
     msg: openstack_keypair is not defined
 
@@ -8,7 +11,7 @@
 
     - name: Generate keyfile 
       user:
-        name:               "x{{ ansible_env.USER }}"
+        name:               "{{ ansible_env.USER }}"
         generate_ssh_key:   yes
         ssh_key_file:       .ssh/ansible_ssh_key
 

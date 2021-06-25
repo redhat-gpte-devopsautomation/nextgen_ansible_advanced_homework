@@ -1,4 +1,7 @@
--name: openstack_images is not defined
+---
+
+- when: openstack_images is not defined
+  name: openstack_images is not defined
   debug:
     msg: openstack_images is not defined
 
@@ -29,4 +32,4 @@
   tags:
     - openstack-images
 
-...
+...    

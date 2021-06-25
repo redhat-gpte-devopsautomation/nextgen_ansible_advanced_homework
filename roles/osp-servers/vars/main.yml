@@ -1,6 +1,8 @@
 ---
-# vars file for osp.servers
-osp_servers:
+# vars file for openstack.servers
+openstack_server: []
+
+os_server:
   frontend:
     name: frontend
     state: present
@@ -38,7 +40,7 @@ osp_servers:
     meta:
       - { group: appdbs, deployment_name: QA}
 
-osp_networks:
+os_networks:
   # Public Facing Network   
   external:
     cloud_name: openstack
@@ -59,7 +61,7 @@ osp_networks:
     external: false
 
   # Public Facing Router connecting the two networks
-osp_router:
+os_router:
   router:
     cloud_name: openstack
     state: present
@@ -67,4 +69,4 @@ osp_router:
     network: ext_network
     interface: int_subnet
 
----
+...

@@ -1,0 +1,70 @@
+- name: Create server instances
+  os_server:
+    cloud:            "{{ openstack_cloud                           | default('openstack') }}"
+    name:             "{{ __openstack_server.instance_name }}"
+    state:            "{{ openstack_server_state                    | default(__openstack_server.state) | default('present') }}"
+    image:            "{{ __openstack_server.image                  | default('rhel-guest') }}"
+    flavor:           "{{ __openstack_server.flavor                 | default('m1.medium') }}"
+    key_name:         "{{ __openstack_server.key_name               | default('ansible_ssh_key') }}"
+    wait:             "{{ __openstack_server.wait                   | default('yes') }}"
+    security_groups:  "{{ __openstack_server.security_group_name }}"
+    delete_fip:       "{{__openstack_server.delete_fip              | default(true) }}"
+    meta: "group={{ __openstack_server.group }},deployment_name={{ __openstack_server.deployment }}"
+    nics:
+      - net-name: int_network
+      #    - net-name: ext_network
+    userdata: |
+      #!/bin/bash
+      curl -o /tmp/openstack.pub http://www.opentlc.com/download/ansible_bootcamp/openstack_keys/openstack.pub
+      cat /tmp/openstack.pub >> /home/cloud-user/.ssh/authorized_keys
+  loop: "{{ openstack_server }}"      
+  loop_control:
+    loop_var: openstack_server
+  async: 900
+  poll: 0
+  register: r_instances
+
+- name: Wait for async OSP instance creation to complete
+  async_status: "jid={{ item.ansible_job_id }}"
+  register: r_wait
+  until: r_wait.finished
+  retries: 900
+  loop: "{{ r_instances.results }}"
+
+- name: Debug instances 
+  debug:
+    msg: "Server is {{ __instance.__openstack_server.instance_name }}"
+    verbosity: 2
+  loop: "{{ r_instances.results }}"
+  loop_control:
+    loop_var: __instance
+
+- when: openstack_server_state|default('present') != 'absent'
+  block:
+
+    - name: Add floating IP to instances
+      os_floating_ip:
+        cloud: openstack
+        state: "{{ openstack_server_state | default('present') }}"
+        reuse: yes
+        server: "{{ __instance.__openstack_server.instance_name }}"
+        network: ext_network
+        wait: true
+        timeout: 180
+      loop: "{{ r_instances.results }}"
+      loop_control:
+        loop_var: __instance
+      register: r_floating_ips
+
+    - name: Wait for servers by name to be available
+      wait_for:
+        host: "{{ __fip.floating_ip.floating_ip_address }}"
+        port: 22
+        search_regex: OpenSSH
+        timeout: 600
+      loop: "{{ r_floating_ips.results }}"
+      loop_control:
+        loop_var: __fip
+      delegate_to: "{{ inventory_hostname }}"
+
+...
